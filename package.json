@@ -24,6 +24,7 @@
   "type": "module",
   "dependencies": {
     "@inqling/svelte-icons": "^3.3.2",
+    "clsx": "^1.2.1",
     "svelte-headlessui": "^0.0.16",
     "svelte-transition": "^0.0.9"
   }

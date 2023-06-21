@@ -2,6 +2,7 @@ export interface Search {
     Search: SearchResult[]
     totalResults: string
     Response: 'True' | 'False'
+    Error?: string;
 }
 
 export interface SearchResult {
