@@ -1,6 +1,9 @@
 <script lang="ts">
-  import type { Search, SearchResult } from "../interfaces";
+  import { slide } from "svelte/transition";
+  import { selectedOption } from "../stores/store";
+  import type { SearchResult } from "../interfaces";
   import { uid, onClickOutside } from "./Context.svelte";
+  import { onDestroy } from "svelte";
 
   export let disabled: boolean | undefined = undefined;
   export let error: boolean | undefined = undefined;
@@ -15,11 +18,9 @@
   export let required: boolean | undefined = undefined;
   export let value: string = "";
 
-  export let onSelect: (e: SearchResult) => void;
-  $: onSelect(selectedOption);
-
   export let onKeyPress: (searchStr: string) => void;
-  export let filter = (text: string) => {
+
+  let filter = (text: string) => {
     const sanitized = text.trim().toLowerCase();
 
     return options.reduce((a: SearchResult[], o) => {
@@ -37,9 +38,17 @@
   let inputElement: HTMLInputElement;
   let list: SearchResult[] = [];
   let isListOpen = false;
-  let selectedOption: SearchResult;
+
+  const unsub = selectedOption.subscribe((value) => {
+    if (value && inputElement) {
+      inputElement.value = value.Title;
+    }
+  });
+
+  onDestroy(unsub);
 
   async function onInputKeyup(event: any) {
+    onKeyPress(inputElement.value);
     switch (event.key) {
       case "Escape":
       case "ArrowUp":
@@ -59,8 +68,6 @@
         event.stopPropagation();
         break;
 
-      default:
-        onKeyPress(inputElement.value);
         await showList(event.target.value);
     }
   }
@@ -98,7 +105,7 @@
   }
 
   function onOptionClick(event: any) {
-    selectOption(event.target.textContent);
+    selectOption(event.target.id);
     hideList();
   }
 
@@ -141,6 +148,7 @@
         break;
 
       case "Enter":
+        // TODO fix this
         selectOption(event.target);
         hideList();
         flag = true;
@@ -177,17 +185,19 @@
   function hideList() {
     if (!isListOpen) return;
 
-    if (selectedOption) {
-      inputElement.value = selectedOption.Title;
+    if ($selectedOption) {
+      inputElement.value = $selectedOption.Title;
     }
 
     isListOpen = false;
     inputElement.focus();
   }
 
-  function selectOption(title: string) {
-    const foundOption = options.find((option) => option.Title === title);
-    if (foundOption) selectedOption = foundOption;
+  function selectOption(id: string) {
+    const foundOption = options.find(
+      (option) => option.imdbID.trim() === id.trim()
+    );
+    if (foundOption) selectedOption.set(foundOption);
   }
 </script>
 
@@ -227,53 +237,33 @@
       aria-expanded={isListOpen}
       aria-required={required ? "true" : undefined}
     />
-
-    <ul
-      class="combobox__list"
-      role="listbox"
-      aria-label={label}
-      hidden={!isListOpen}
-      on:click={onOptionClick}
-      on:keydown={onListKeyDown}
-      bind:this={listElement}
-    >
-      {#each list as listOption}
-        <li
-          class="list__option"
-          tabindex={listOption ? undefined : -1}
-          data-text={listOption.Title}
-          data-value={listOption.Title}
-          aria-selected={value === listOption.Title}
-          role="option"
-        >
-          {listOption.Title}
-        </li>
-        <!-- {#each listOption. as listOptionOption}
-            <li
-              class="list__option"
-              class:--disabled={listOptionOption.disabled}
-              role="option"
-              tabindex={listOptionOption.disabled ? undefined : "-1"}
-              data-text={listOptionOption.text}
-              data-value={listOptionOption.value}
-              aria-selected={value === listOptionOption.value}
-              aria-disabled={listOptionOption.disabled}
-            >
-              <slot name="option" {listOptionOption}>
-                {listOptionOption.text}
-              </slot>
-              {#if listOptionOption.value === value}
-                <svg viewBox="0 0 24 24" class="icon">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-              {/if}
-            </li>
-          {/each} -->
-      {:else}
-        <li class="list__no-results">No results available</li>
-      {/each}
-    </ul>
-
+    {#if isListOpen}
+      <ul
+        transition:slide
+        class="combobox__list border border-gray-400 shadow-lg"
+        role="listbox"
+        aria-label={label}
+        on:click={onOptionClick}
+        on:keydown={onListKeyDown}
+        bind:this={listElement}
+      >
+        {#each list as listOption (listOption.imdbID)}
+          <li
+            class="list__option"
+            id={listOption.imdbID}
+            tabindex={listOption ? undefined : -1}
+            data-text={listOption.Title}
+            data-value={listOption.Title}
+            aria-selected={value === listOption.Title}
+            role="option"
+          >
+            {listOption.Title}
+          </li>
+        {:else}
+          <li class="list__no-results">No results available</li>
+        {/each}
+      </ul>
+    {/if}
     <div class="visually-hidden" role="status" aria-live="polite">
       {list.length} results available.
     </div>
@@ -312,11 +302,8 @@
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     z-index: 100;
-
     background-color: var(--background-color);
     border-radius: 0.3em;
-    border: 0.175rem solid var(--accent-color);
-    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
   }
 
   .list__no-results {
