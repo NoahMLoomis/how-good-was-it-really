@@ -42,3 +42,8 @@ export interface Rating {
     Source: string
     Value: string
 }
+
+export interface NormalizedRating {
+    Source: string
+    Value: number
+}
