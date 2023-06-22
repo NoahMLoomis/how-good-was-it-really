@@ -74,8 +74,8 @@
 </script>
 
 <div class="flex-1 text-center my-16">
-  <h1 class="text-4xl font-bold">How good was it really?</h1>
-  <div class="text-sm text-gray-500">
+  <h1 class="text-5xl font-extrabold text-gray-800">How good was it really?</h1>
+  <div class="text-gray-500 font-bold">
     Search for your favorite movie or tv series and see the rating
   </div>
   <div class="flex flex-col mt-12 mx-auto">
@@ -83,10 +83,11 @@
       <input
         bind:value={searchStr}
         on:keyup={handleKeyPress}
-        class="tracking-wider px-4 py-2 rounded-full border border-gray-300 w-full text-center"
+        class="tracking-wider shadow-sm px-4 py-2 rounded-full w-full text-center"
         type="text"
         autocapitalize="none"
         autocomplete="off"
+        placeholder="Start typing the title of the movie/tv show..."
         spellcheck="false"
         aria-autocomplete="list"
       />
@@ -98,19 +99,18 @@
       {#if isListOpen}
         <ul
           in:slide
-          class="border border-gray-400 shadow-lg list-none m-0 min-w-full overflow-y-auto z-50 rounded"
+          class=" shadow-lg list-none m-0 min-w-full overflow-y-auto z-50 rounded"
           role="listbox"
         >
           {#each $options as listOption, index (listOption.imdbID)}
             <li
               id={listOption.imdbID}
               class={clsx(
-                "hover:bg-gray-300 flex justify-center items-center py-1 hover:cursor-pointer",
-                focusedIndex === index && "bg-gray-300"
+                "hover:bg-green-300 text-xl font-bold text-gray-800 flex justify-center items-center py-1 hover:cursor-pointer",
+                focusedIndex === index && "bg-green-300"
               )}
               on:click={() => handleClick(listOption.imdbID)}
               on:keydown={(event) => handleKeyPress(event)}
-              tabindex={index === focusedIndex ? 0 : -1}
             >
               {listOption.Title}
             </li>
