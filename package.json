@@ -12,7 +12,6 @@
   "devDependencies": {
     "@sveltejs/adapter-auto": "^2.0.0",
     "@sveltejs/kit": "^1.5.0",
-    "@types/d3": "^7.4.0",
     "autoprefixer": "^10.4.14",
     "postcss": "^8.4.24",
     "svelte": "^3.54.0",
@@ -26,10 +25,6 @@
   "dependencies": {
     "@inqling/svelte-icons": "^3.3.2",
     "clsx": "^1.2.1",
-    "d3": "^7.8.5",
-    "d3-array": "^3.2.4",
-    "d3-scale": "^4.0.2",
-    "d3-shape": "^3.2.0",
     "svelte-headlessui": "^0.0.16",
     "svelte-transition": "^0.0.9"
   }

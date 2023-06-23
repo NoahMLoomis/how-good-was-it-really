@@ -3,6 +3,7 @@
   import type { SearchInfo } from "../interfaces";
 
   let details: SearchInfo | null = null;
+
   selectedOption.subscribe(async (value) => {
     if (value) {
       const resp = await fetch(
@@ -16,16 +17,23 @@
   });
 </script>
 
-<div class="flex flex-col justify-center items-center mt-16">
+<div class="flex flex-col justify-center items-center mt-12">
   {#if details && details?.Poster !== "N/A"}
-    <img src={details.Poster} width="150vw" height="auto" alt="Movie poster" />
-
     {#if details?.Ratings?.length > 0}
-      <div class="text-left">
+      <div
+        class="text-left rounded bg-gradient-to-br mb-2 from-teal-300 to-lime-300 p-1 shadow-md"
+      >
         {#each details.Ratings as rating (rating.Source)}
-          <div>{rating.Source}: {rating.Value}</div>
+          <div class="font-bold">{rating.Source}: {rating.Value}</div>
         {/each}
       </div>
     {/if}
+    <img
+      src={details.Poster}
+      width="160vw"
+      height="auto"
+      class="rounded"
+      alt="Movie poster"
+    />
   {/if}
 </div>

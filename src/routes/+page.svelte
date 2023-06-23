@@ -2,8 +2,7 @@
   import clsx from "clsx";
   import { options, selectedOption } from "../stores/store";
   import Infographic from "../components/Infographic.svelte";
-  import type { Search, SearchResult } from "../interfaces";
-  import { onDestroy } from "svelte";
+  import type { Search } from "../interfaces";
   import { fade, slide } from "svelte/transition";
   import Context from "../components/Context.svelte";
 
