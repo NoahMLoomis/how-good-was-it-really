@@ -86,7 +86,7 @@
         type="text"
         autocapitalize="none"
         autocomplete="off"
-        placeholder="Start typing the title of the movie/tv show..."
+        placeholder="Title of movie or show"
         spellcheck="false"
         aria-autocomplete="list"
       />
