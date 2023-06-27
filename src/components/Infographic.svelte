@@ -7,7 +7,7 @@
   selectedOption.subscribe(async (value) => {
     if (value) {
       const resp = await fetch(
-        `http://www.omdbapi.com/?apikey=cfebe6e7&i=${value.imdbID}&type=episode`
+        `https://www.omdbapi.com/?apikey=cfebe6e7&i=${value.imdbID}&type=episode`
       );
       const data = (await resp.json()) as SearchInfo;
       if (data.Response === "True") {

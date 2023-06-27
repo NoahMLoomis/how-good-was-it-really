@@ -20,7 +20,7 @@
 
   const fetchTitles = async (searchStr: string) => {
     const resp = await fetch(
-      `http://www.omdbapi.com/?apikey=cfebe6e7&s=${searchStr}`
+      `https://www.omdbapi.com/?apikey=cfebe6e7&s=${searchStr}`
     );
     const data = (await resp.json()) as Search;
     if (data.Response === "True") {
